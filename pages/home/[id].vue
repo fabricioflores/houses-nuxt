@@ -8,6 +8,7 @@
     <img src="/img/marker.svg" width="20" height="20"> {{ home.location.address }} {{ home.location.city }} {{ home.location.state }} <br>
     <img src="/img/star.svg" width="20" height="20"> {{ home.reviewValue }} <br>
     {{ home.guests }} guests, {{ home.bedrooms }} rooms, {{ home.beds }} beds, {{ home.bathrooms }} bathrooms <br>
+    <div style="width: 800px; height: 800px;" ref="map"></div>
   </div>
 </template>
 
@@ -15,21 +16,31 @@
 import { defineComponent } from '@vue/composition-api'
 import { useRoute } from 'vue-router';
 import { useHead } from '@vueuse/head';
+import { ref, onMounted } from 'vue'
 
-import homes from '~/data/homes.json';
+import { useGet } from '~/composables/useGet';
 
 
 export default defineComponent({
-  setup() {
+  async setup() {
     const route = useRoute();
-    const home = homes.find(home => home.objectID === route.params.id);
+    const map = ref(null);
+
+    const { data: home } = await useGet(`homes/${route.params.id}`);
 
     useHead({
       title: home.title,
     });
 
+    onMounted(() => {
+      const { $showMap } = useNuxtApp();
+      $showMap(map.value, home._geoloc.lat, home._geoloc.lng);
+    });
+
+
     return {
       home,
+      map,
     }
   },
 })
