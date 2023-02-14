@@ -26,17 +26,16 @@ export default defineComponent({
     const route = useRoute();
     const map = ref(null);
 
+    onMounted(() => {
+      const { $showMap } = useNuxtApp();
+      $showMap(map.value, home.value._geoloc.lat, home.value._geoloc.lng);
+    });
+
     const { data: home } = await useGet(`homes/${route.params.id}`);
 
     useHead({
       title: home.title,
     });
-
-    onMounted(() => {
-      const { $showMap } = useNuxtApp();
-      $showMap(map.value, home._geoloc.lat, home._geoloc.lng);
-    });
-
 
     return {
       home,
