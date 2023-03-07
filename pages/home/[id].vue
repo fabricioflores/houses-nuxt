@@ -18,7 +18,7 @@ import { useRoute } from 'vue-router';
 import { useHead } from '@vueuse/head';
 import { ref, onMounted } from 'vue'
 
-import { useGet } from '~/composables/useGet';
+import { useGetHome,useGetReviewsByHomeId } from '~/composables/home';
 
 
 export default defineComponent({
@@ -31,10 +31,18 @@ export default defineComponent({
       $showMap(map.value, home.value._geoloc.lat, home.value._geoloc.lng);
     });
 
-    const { data: home } = await useGet(`homes/${route.params.id}`);
+    const { data: home, error: getHomeError } = await useGetHome(route.params.id);
+    const { data: reviews, error } = await useGetReviewsByHomeId(route.params.id);
+
+    if (getHomeError.value) {
+      if (getHomeError.value.statusCode === 404) {
+        throw createError({ statusCode: 404, statusMessage: 'Page Not Found' });
+      }
+      throw createError({ statusCode: 500, statusMessage: getHomeError.value.message });
+    }
 
     useHead({
-      title: home.title,
+      title: home.value.title,
     });
 
     return {

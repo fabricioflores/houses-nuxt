@@ -25,3 +25,28 @@ export function useGet<T>(
     },
   })
 }
+
+export function usePost<T>(
+  request: NitroFetchRequest,
+  opts?:
+    | UseFetchOptions<
+        T extends void ? unknown : T,
+        (res: T extends void ? unknown : T) => T extends void ? unknown : T,
+        KeyOfRes<
+          (res: T extends void ? unknown : T) => T extends void ? unknown : T
+        >
+      >
+    | undefined
+) {
+  const config = useRuntimeConfig();
+
+  return useFetch<T>(request, {
+    ...opts,
+    baseURL: config.public.baseURL,
+    headers: {
+      'X-Algolia-API-Key': config.public.apiKey,
+      'X-Algolia-Application-Id': config.public.appId,
+    },
+    method: 'POST',
+  })
+}
