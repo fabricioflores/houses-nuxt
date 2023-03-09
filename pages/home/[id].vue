@@ -9,6 +9,12 @@
     <img src="/img/star.svg" width="20" height="20"> {{ home.reviewValue }} <br>
     {{ home.guests }} guests, {{ home.bedrooms }} rooms, {{ home.beds }} beds, {{ home.bathrooms }} bathrooms <br>
     <div style="width: 800px; height: 800px;" ref="map"></div>
+    <div v-for="review in reviews" :key="review.objectID">
+      <img :src="review.reviewer.image"> <br>
+      {{ review.reviewer.name }} <br>
+      {{ review.date }} <br>
+      {{ review.comment }}
+    </div>
   </div>
 </template>
 
@@ -17,9 +23,6 @@ import { defineComponent } from '@vue/composition-api'
 import { useRoute } from 'vue-router';
 import { useHead } from '@vueuse/head';
 import { ref, onMounted } from 'vue'
-
-import { useGet } from '~/composables/useGet';
-
 
 export default defineComponent({
   async setup() {
@@ -31,15 +34,36 @@ export default defineComponent({
       $showMap(map.value, home.value._geoloc.lat, home.value._geoloc.lng);
     });
 
-    const { data: home } = await useGet(`homes/${route.params.id}`);
+    const config = useRuntimeConfig();
+
+    const fetchOptions = {
+          baseURL: config.public.baseURL,
+          headers: {
+            'X-Algolia-API-Key': config.public.apiKey,
+            'X-Algolia-Application-Id': config.public.appId,
+          },
+    }
+
+    const [{ data: home }, { data: reviews }] = await Promise.all([
+        useFetch(`homes/${route.params.id}`, fetchOptions),
+        useFetch(`reviews/query`, {
+          method: 'POST',
+          ...fetchOptions,
+          body: {
+            filters: `homeId:${route.params.id}`,
+          },
+        })
+    ])
 
     useHead({
-      title: home.title,
+      title: home.value.title,
     });
+
 
     return {
       home,
       map,
+      reviews: reviews.value.hits,
     }
   },
 })
