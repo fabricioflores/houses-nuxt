@@ -9,6 +9,12 @@
     <img src="/img/star.svg" width="20" height="20"> {{ home.reviewValue }} <br>
     {{ home.guests }} guests, {{ home.bedrooms }} rooms, {{ home.beds }} beds, {{ home.bathrooms }} bathrooms <br>
     <div style="width: 800px; height: 800px;" ref="map"></div>
+    <div v-for="review in reviews" :key="review.objectID">
+      <img :src="review.reviewer.image"> <br>
+      {{ review.reviewer.name }} <br>
+      {{ review.date }} <br>
+      {{ review.comment }}
+    </div>
   </div>
 </template>
 
@@ -41,6 +47,7 @@ export default defineComponent({
     const [{ data: home }, { data: reviews }] = await Promise.all([
         useFetch(`homes/${route.params.id}`, fetchOptions),
         useFetch(`reviews/query`, {
+          method: 'POST',
           ...fetchOptions,
           body: {
             filters: `homeId:${route.params.id}`,
@@ -56,6 +63,7 @@ export default defineComponent({
     return {
       home,
       map,
+      reviews: reviews.value.hits,
     }
   },
 })
