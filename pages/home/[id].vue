@@ -18,9 +18,6 @@ import { useRoute } from 'vue-router';
 import { useHead } from '@vueuse/head';
 import { ref, onMounted } from 'vue'
 
-import { useGetHome,useGetReviewsByHomeId } from '~/composables/home';
-
-
 export default defineComponent({
   async setup() {
     const route = useRoute();
@@ -31,19 +28,30 @@ export default defineComponent({
       $showMap(map.value, home.value._geoloc.lat, home.value._geoloc.lng);
     });
 
-    const { data: home, error: getHomeError } = await useGetHome(route.params.id);
-    const { data: reviews, error } = await useGetReviewsByHomeId(route.params.id);
+    const config = useRuntimeConfig();
 
-    if (getHomeError.value) {
-      if (getHomeError.value.statusCode === 404) {
-        throw createError({ statusCode: 404, statusMessage: 'Page Not Found' });
-      }
-      throw createError({ statusCode: 500, statusMessage: getHomeError.value.message });
+    const fetchOptions = {
+          baseURL: config.public.baseURL,
+          headers: {
+            'X-Algolia-API-Key': config.public.apiKey,
+            'X-Algolia-Application-Id': config.public.appId,
+          },
     }
+
+    const [{ data: home }, { data: reviews }] = await Promise.all([
+        useFetch(`homes/${route.params.id}`, fetchOptions),
+        useFetch(`reviews/query`, {
+          ...fetchOptions,
+          body: {
+            filters: `homeId:${route.params.id}`,
+          },
+        })
+    ])
 
     useHead({
       title: home.value.title,
     });
+
 
     return {
       home,
