@@ -12,8 +12,8 @@
     <div v-for="review in reviews" :key="review.objectID">
       <img :src="review.reviewer.image"> <br>
       {{ review.reviewer.name }} <br>
-      {{ review.date }} <br>
-      {{ review.comment }}
+      {{ formatDate(review.date) }} <br>
+      <ShortText :text="review.comment" :target="150" />
     </div>
   </div>
 </template>
@@ -36,6 +36,7 @@ export default defineComponent({
 
     const config = useRuntimeConfig();
 
+    // TODO: check how to move to a composable
     const fetchOptions = {
           baseURL: config.public.baseURL,
           headers: {
@@ -51,6 +52,8 @@ export default defineComponent({
           ...fetchOptions,
           body: {
             filters: `homeId:${route.params.id}`,
+            hitsPerPage: 6,
+            attributesToHighlight: [],
           },
         })
     ])
@@ -59,11 +62,21 @@ export default defineComponent({
       title: home.value.title,
     });
 
+    function formatDate(strDate) {
+      const date = new Date(strDate);
+      return date.toLocaleDateString(undefined, {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      });
+    }
+
 
     return {
       home,
       map,
       reviews: reviews.value.hits,
+      formatDate,
     }
   },
 })
