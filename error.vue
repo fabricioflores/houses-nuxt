@@ -4,21 +4,15 @@
     </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script setup lang="ts">
 
-export default defineComponent({
-    props: {
-        error: {
-            type: Object,
-            required: true,
-        }
-    },
-    setup() {
-            useHead({
-                title: 'Error',
-            });
-    }
+const props = defineProps({
+    error: { type: Object, required: true },
 })
+
+useHead({
+    title: 'Error',
+});
+
 </script>
 

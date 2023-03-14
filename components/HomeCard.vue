@@ -8,19 +8,11 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script setup lang="ts">
 
-export default defineComponent({
-  setup() {
-
-  },
-  props: {
-    home: {
-      type: Object,
-      required: true,
-    }
-  },
+const props = defineProps({
+    home: { type: Object, required: true },
 })
+
 </script>
 
