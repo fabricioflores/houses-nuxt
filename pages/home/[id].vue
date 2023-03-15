@@ -15,6 +15,11 @@
       {{ formatDate(review.date) }} <br>
       <ShortText :text="review.comment" :target="150" />
     </div>
+    <img :src="user.image"> <br>
+    {{ user.name }} <br>
+    {{ formatDate(user.joined) }} <br>
+    {{ user.reviewCount }} <br>
+    {{ user.description }} <br>
   </div>
 </template>
 
@@ -45,7 +50,11 @@ export default defineComponent({
           },
     }
 
-    const [{ data: home }, { data: reviews }] = await Promise.all([
+    const [
+      { data: home, error: homeError },
+      { data: reviews, error: reviewsError },
+      { data: user, error: userError }
+    ] = await Promise.all([
         useFetch(`homes/${route.params.id}`, fetchOptions),
         useFetch(`reviews/query`, {
           method: 'POST',
@@ -55,8 +64,21 @@ export default defineComponent({
             hitsPerPage: 6,
             attributesToHighlight: [],
           },
+        }),
+        useFetch(`users/query`, {
+          method: 'POST',
+          ...fetchOptions,
+          body: {
+            filters: `homeId:${route.params.id}`,
+            attributesToHighlight: [],
+          },
         })
-    ])
+    ]);
+
+    const hasError = homeError?.value || reviewsError?.value || userError?.value;
+    if (hasError) {
+      return error({ statusCode: hasError.statusCode, message: hasError.message })
+    }
 
     useHead({
       title: home.value.title,
@@ -76,6 +98,7 @@ export default defineComponent({
       home,
       map,
       reviews: reviews.value.hits,
+      user: user.value.hits[0],
       formatDate,
     }
   },
