@@ -2,7 +2,7 @@ export {};
 
 declare global {
   interface Window {
-    initMap: Function;
+    initGoogleMaps: Function;
     google: google.maps,
   }
 }
