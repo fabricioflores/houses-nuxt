@@ -7,13 +7,11 @@
     </div>
 </template>
 <script setup lang="ts">
-import { ref } from 'vue'
-
 const route = useRoute();
 
-const lat = ref(route.query.lat);
-const lng = ref(route.query.lng);
-const label = ref(route.query.label);
+const lat = computed(() => route.query.lat);
+const lng = computed(() => route.query.lng);
+const label = computed(() => route.query.label);
 
 const config = useRuntimeConfig();
 
@@ -26,13 +24,6 @@ const fetchOptions = {
         },
 }
 
-watch(route, async (routeChanged) => {
-    lat.value = routeChanged.query.lat;
-    lng.value = routeChanged.query.lng;
-    label.value = routeChanged.query.label;
-    refresh();
-});
-
 const { data: homes , refresh } = await useAsyncData<any>(`${lat.value}-${lng.value}`, () => $fetch(`homes/query`, {
     method: 'POST',
     ...fetchOptions,
@@ -44,5 +35,7 @@ const { data: homes , refresh } = await useAsyncData<any>(`${lat.value}-${lng.va
         attributesToHighlight: [],
     },
 }));
+
+watch(() => route.query, () => refresh())
 
 </script>
