@@ -1,7 +1,7 @@
 <template>
     <div>
         {{ lat }} / {{ lng }} / {{ label }}
-        <div v-for="home in homes" :key="home.objectID">
+        <div v-for="home in homes.hits" :key="home.objectID">
             {{home.title}}
         </div>
     </div>
@@ -26,16 +26,14 @@ const fetchOptions = {
         },
 }
 
-watch(route, (routeChanged) => {
+watch(route, async (routeChanged) => {
     lat.value = routeChanged.query.lat;
     lng.value = routeChanged.query.lng;
     label.value = routeChanged.query.label;
-    console.log('route changed', lat.value, lng.value, label.value)
     refresh();
 });
 
-const { data: { value: { hits: homes } }, refresh } = await useFetch<any>(`homes/query`, {
-    key: `${lat.value}-${lng.value}`,
+const { data: homes , refresh } = await useAsyncData<any>(`${lat.value}-${lng.value}`, () => $fetch(`homes/query`, {
     method: 'POST',
     ...fetchOptions,
     body: {
@@ -45,5 +43,6 @@ const { data: { value: { hits: homes } }, refresh } = await useFetch<any>(`homes
         hitsPerPage: 10,
         attributesToHighlight: [],
     },
-});
+}));
+
 </script>
