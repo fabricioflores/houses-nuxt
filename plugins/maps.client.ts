@@ -45,7 +45,7 @@ export default defineNuxtPlugin(() => {
     });
   }
 
-  function showMap(canvas: HTMLElement, lat: number, lng: number) {
+  function showMap(canvas: HTMLElement | null, lat: number | string, lng: number | string, markers: any[]) {
     if(!isLoaded) {
       waiting.push({
         fn: showMap,
@@ -58,13 +58,42 @@ export default defineNuxtPlugin(() => {
       center: new window.google.maps.LatLng(lat, lng),
       disableDefaultUI: true,
       zoomControl: true,
+      styles: [{
+        featureType: 'poi.business',
+        elementType: 'labels.icon',
+        stylers: [{ visibility: 'off' }]
+      }]
     };
     const mapElement = new window.google.maps.Map(canvas, mapOptions);
-    const position = new window.google.maps.LatLng(lat, lng);
-    const marker = new window.google.maps.Marker({
-      position,
+
+    if(!markers) {
+      const position = new window.google.maps.LatLng(lat, lng);
+      const marker = new window.google.maps.Marker({
+        position,
+        clickeable: false,
+      });
+      marker.setMap(mapElement);
+      return;
+    }
+
+    const bounds = new window.google.maps.LatLngBounds();
+    markers.forEach(home => {
+      const position = new window.google.maps.LatLng(home.lat, home.lng);
+      const marker = new window.google.maps.Marker({
+        position,
+        label: {
+          text: `$${home.pricePerNight}`,
+          className: `marker home-${home.id}`,
+        },
+        icon: 'https://maps.gstatic.com/mapfiles/transparent.png',
+        clickeable: false,
+      });
+      marker.setMap(mapElement);
+      bounds.extend(position);
     });
-    marker.setMap(mapElement);
+
+    mapElement.fitBounds(bounds);
+
   }
 
   return {
