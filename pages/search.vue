@@ -1,9 +1,10 @@
 <template>
     <div>
         {{ lat }} / {{ lng }} / {{ label }}
-        <div v-for="home in homes.hits" :key="home.objectID">
-            {{home.title}}
+        <div v-if="homes.hits.length > 0">
+            <HomeRow v-for="home in homes.hits" :key="home.objectID" :home="home" />
         </div>
+        <div v-else>No results found</div>
     </div>
 </template>
 <script setup lang="ts">
@@ -37,5 +38,9 @@ const { data: homes , refresh } = await useAsyncData<any>(`${lat.value}-${lng.va
 }));
 
 watch(() => route.query, () => refresh())
+
+useHead({
+  title: () => `Homes around ${label.value}`,
+});
 
 </script>
