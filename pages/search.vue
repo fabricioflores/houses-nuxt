@@ -1,16 +1,20 @@
 <template>
-    <div>
-        Results for {{ label }}
-        <div style="width: 800px; height: 800px; float: right;" ref="map"></div>
-        <div v-if="homes.hits.length > 0">
-            <nuxt-link v-for="home in homes.hits" :key="home.objectID" :to="`/home/${home.objectID}`">
-                <HomeRow
-                    :home="home"
-                    @mouseover="highlightMarker(home.objectID, true)"
-                    @mouseout="highlightMarker(home.objectID, false)" />
-            </nuxt-link>
+    <div class="app-search-results-page">
+        <div class="app-search-results">
+            <div class="app-search-results-listing">
+                <h2 class="app-title">Stays in {{ label }}</h2>
+                <nuxt-link v-for="home in homes.hits" :key="home.objectID" :to="`/home/${home.objectID}`">
+                    <HomeRow
+                        :home="home"
+                        @mouseover="highlightMarker(home.objectID, true)"
+                        @mouseout="highlightMarker(home.objectID, false)"
+                        class="app-house" />
+                </nuxt-link>
+            </div>
+            <div class="app-search-results-map">
+                <div class="app-map" ref="map"></div>
+            </div>
         </div>
-        <div v-else>No results found</div>
     </div>
 </template>
 <script setup lang="ts">
@@ -59,6 +63,9 @@ function updateMap() {
 }
 
 function getHomeMakers() {
+    if (homes.value.hits.length === 0) {
+        return null;
+    }
     const makers = homes.value.hits.map((home: any) => {
         return {
             ...home._geoloc,

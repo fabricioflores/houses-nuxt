@@ -6,6 +6,7 @@ export default defineNuxtConfig({
       titleTemplate: 'HomeApp | %s',
     },
   },
+  modules: ['@nuxtjs/tailwindcss'],
   runtimeConfig: {
     public: {
       baseURL: process.env.API_BASE_URL,
@@ -13,5 +14,9 @@ export default defineNuxtConfig({
       apiKey: process.env.BACKEND_API_KEY,
       googleMapsKey: process.env.GOOGLE_MAPS_API_KEY,
     },
+  },
+  css: ['~/assets/sass/app.scss'],
+  webpack: {
+    extractCSS: true,
   },
 })

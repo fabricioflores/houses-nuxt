@@ -45,7 +45,7 @@ export default defineNuxtPlugin(() => {
     });
   }
 
-  function showMap(canvas: HTMLElement | null, lat: number | string, lng: number | string, markers: any[]) {
+  function showMap(canvas: HTMLElement | null, lat: number | string, lng: number | string, markers?: any[]) {
     if(!isLoaded) {
       waiting.push({
         fn: showMap,
