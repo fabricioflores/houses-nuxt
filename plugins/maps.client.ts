@@ -1,5 +1,5 @@
 export default defineNuxtPlugin(() => {
-  let isLoaded = true;
+  let isLoaded = false;
   // TODO: type this
   let waiting = [] as any[];
   const config = useRuntimeConfig();
