@@ -8,28 +8,18 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
-import { useHead } from '@vueuse/head';
+<script setup lang="ts">
 
 import homes from '~/data/homes.json';
 
-export default defineComponent({
-  setup() {
+useHead({
+  title: 'HomePage',
+  meta: [{
+    name: 'description',
+    content: 'This is the homepage!',
+    hid: 'description'
+  }]
+});
 
-    useHead({
-      title: 'HomePage',
-      meta: [{
-        name: 'description',
-        content: 'This is the homepage!',
-        hid: 'description'
-      }]
-    });
-
-    return {
-      homes,
-    }
-  },
-})
 </script>
 
