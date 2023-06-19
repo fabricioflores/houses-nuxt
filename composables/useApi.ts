@@ -1,4 +1,7 @@
 import { ComputedRef } from "nuxt/dist/app/compat/capi";
+import { Home, HomeSearchResponse } from "~~/types/home";
+import { ReviewResponse } from "~~/types/review";
+import { UserResponse } from "~~/types/user";
 
 export const useApi = () => {
 
@@ -15,11 +18,11 @@ export const useApi = () => {
     };
 
     const getHomeById = async (id: string) => {
-        return <any>useFetch(`homes/${id}`, getFetchOptions());
+        return useFetch<Home>(`homes/${id}`, getFetchOptions());
     };
 
     const getHomeReviewsByHomeId = async (id: string) => {
-        return <any>useFetch(`reviews/query`, {
+        return useFetch<ReviewResponse>(`reviews/query`, {
             method: 'POST',
             ...getFetchOptions(),
             body: {
@@ -31,7 +34,7 @@ export const useApi = () => {
     };
 
     const getHostInformationByHomeId = async (id: string) => {
-        return <any>useFetch(`users/query`, {
+        return useFetch<UserResponse>(`users/query`, {
             method: 'POST',
             ...getFetchOptions(),
             body: {
@@ -42,7 +45,7 @@ export const useApi = () => {
     };
 
     const getSearchResultsByLocation = async (lat: ComputedRef<string>, lng: ComputedRef<string>) => {
-        return useAsyncData<any>(`${lat.value}-${lng.value}`, () => $fetch(`homes/query`, {
+        return useAsyncData<HomeSearchResponse>(`${lat.value}-${lng.value}`, () => $fetch(`homes/query`, {
             method: 'POST',
             ...getFetchOptions(),
             body: {

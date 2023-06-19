@@ -1,3 +1,5 @@
+import { HomeMarker } from "~~/types/home";
+
 export default defineNuxtPlugin(() => {
   let isLoaded = false;
   // TODO: type this
@@ -45,7 +47,7 @@ export default defineNuxtPlugin(() => {
     });
   }
 
-  function showMap(canvas: HTMLElement | null, lat: number | string, lng: number | string, markers?: any[]) {
+  function showMap(canvas: HTMLElement | null, lat: number | string, lng: number | string, markers?: HomeMarker[] | null) {
     if(!isLoaded) {
       waiting.push({
         fn: showMap,

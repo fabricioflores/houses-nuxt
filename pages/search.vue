@@ -19,6 +19,7 @@
 </template>
 <script setup lang="ts">
 import { ComputedRef } from 'nuxt/dist/app/compat/capi';
+import { HomeMarker } from '~~/types/home';
 
 const route = useRoute();
 const map = ref(null);
@@ -45,16 +46,16 @@ function updateMap() {
 }
 
 function getHomeMakers() {
-    if (homes.value.hits.length === 0) {
+    if (homes.value?.hits.length === 0) {
         return null;
     }
-    const makers = homes.value.hits.map((home: any) => {
+    const makers = homes.value?.hits.map((home): HomeMarker => {
         return {
             ...home._geoloc,
             pricePerNight: home.pricePerNight,
             id: home.objectID,
         };
-    });
+    }) || [];
     return makers;
 }
 
