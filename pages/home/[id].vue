@@ -24,8 +24,8 @@ const [
     getHostInformationByHomeId(route.params.id as string),
 ]);
 
-const reviews = reviewsData.value.hits;
-const user = userData.value.hits[0]
+const reviews = reviewsData.value?.hits;
+const user = userData.value?.hits[0]
 
 const hasError = homeError?.value || reviewsError?.value || userError?.value;
 if (hasError) {
@@ -33,7 +33,7 @@ if (hasError) {
 }
 
 useHead({
-  title: home.value.title,
+  title: home.value?.title,
 });
 
 </script>
