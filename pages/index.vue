@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-for="home in homes" :key="home.objectID" style="float: left; margin: 10px;">
+    <div v-for="home in homes.hits" :key="home.objectID" style="float: left; margin: 10px;">
       <nuxt-link :to="`/home/${home.objectID}`" no-prefetch>
         <HomeCard :home="home" />
       </nuxt-link>
@@ -10,7 +10,9 @@
 
 <script setup lang="ts">
 
-import homes from '~/data/homes.json';
+const { getHomePageHomeList } = useApi();
+
+const { data: homes } = await getHomePageHomeList();
 
 useHead({
   title: 'HomePage',

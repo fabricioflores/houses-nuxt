@@ -58,10 +58,22 @@ export const useApi = () => {
         }));
     };
 
+    const getHomePageHomeList = async () => {
+        return useAsyncData<HomeSearchResponse>(() => $fetch(`homes/query`, {
+            method: 'POST',
+            ...getFetchOptions(),
+            body: {
+                hitsPerPage: 10,
+                attributesToHighlight: [],
+            },
+        }));
+    };
+
     return {
         getHomeById,
         getHomeReviewsByHomeId,
         getHostInformationByHomeId,
         getSearchResultsByLocation,
+        getHomePageHomeList,
     }
 }
