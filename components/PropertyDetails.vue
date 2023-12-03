@@ -22,10 +22,6 @@
             <div class="app-price">
                 ${{ home.pricePerNight }} <span> / night</span>
             </div>
-            <div class="app-search">
-                <input type="text" class="datepicker" placeholder="Check In"/>
-                <input type="text" class="datepicker" placeholder="Check Out"/>
-            </div>
             <button class="app-big-button">Request to book!</button>
         </div>
     </div>
