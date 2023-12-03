@@ -6,15 +6,8 @@
       </div>
       <div class="app-search">
         <input type="text" ref="citySearch" @changed="onChange" placeholder="Enter your address"/>
-        <input type="text" class="datepicker" placeholder="Check In"/>
-        <input type="text" class="datepicker" placeholder="Check Out"/>
-        <button>
-          <img src="/images/icons/search.svg">
-        </button>
       </div>
       <div class="app-user-menu">
-        <img src="/images/icons/house.svg">
-        <div class="name">Host</div>
         <img src="/images/user.jpg" class="avatar">
       </div>
     </header>

@@ -2,9 +2,6 @@
   <div class="flex flex-col items-center">
     <div class="app-search w-10/12 mb-9">
       <input class="w-full" type="text" ref="citySearch" @changed="onChange" placeholder="Enter your address"/>
-      <button>
-        <img src="/images/icons/search.svg">
-      </button>
     </div>
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-10/12">
       <div v-for="home in homes.hits" :key="home.objectID">
